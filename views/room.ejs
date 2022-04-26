@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="nl">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <title>Room: <%= roomId %></title>
+    </head>
+    <body>
+        <header>
+            <h1>Room: <%= roomId %></h1>
+            <!-- <h2>Naam:</h2> -->
+        </header>
+        <main class="room">
+            <section class="info-container">
+                <div class="users">
+                    <h2>Gebruikers <span id="user-count"></span></h2>
+                    <ul class="user-list"></ul>
+                </div>
+                <div class="chat">
+                    <ul class="chat-list"></ul>
+                    <form autocomplete="off" id="chat-form" method="/">
+                        <input maxlength="40" id="message" type="text" name="message" placeholder="Bericht" /><button type="submit">
+                            Verstuur
+                        </button>
+                    </form>
+                </div>
+            </section>
+            <section class="game-container">
+                <canvas></canvas>
+            </section>
+        </main>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/main.js"></script>
+    </body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="nl">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="/css/style.css" />
+        <title>Home</title>
+    </head>
+    <body class="home">
+        <h1>Test app</h1>
+        <input autocomplete="off" class="menu-item" name="username" id="usernameInput" placeholder="Username" type="text" maxlength="15" />
+        <form class="menu-item" autocomplete="off" action="/join-room" method="POST">
+            <input name="roomId" required id="room-id" placeholder="Room ID" type="number" min="10000" max="99999" />
+            <button type="submit">Neem deel</button>
+        </form>
+        <a class="menu-item" href="/room/<%= Math.floor(Math.random() * (99999 - 10000) + 10000) %>">Maak nieuwe room aan</a>
+        <script src="/js/username.js"></script>
+    </body>
+</html>
