@@ -1,4 +1,5 @@
-const usernameInput = document.querySelector('#usernameInput')
+const usernameInput = document.querySelector('#username-input')
+const roomInput = document.querySelector('#room-id')
 
 // View username if in localstorage
 if (localStorage.getItem('username')) {
@@ -13,3 +14,10 @@ usernameInput.addEventListener('blur', (e) => {
         localStorage.setItem(name, value)
     }
 })
+
+// Limit room input length to 5 numbers
+roomInput.oninput = function () {
+    if (this.value.length > 5) {
+        this.value = this.value.slice(0, 5)
+    }
+}

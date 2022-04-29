@@ -21,6 +21,7 @@
     "dependencies": {
         "@dicebear/avatars": "^4.10.2",
         "@dicebear/avatars-human-sprites": "^4.10.2",
+        "@dicebear/pixel-art-neutral": "^4.10.2",
         "ejs": "^3.0.2",
         "express": "^4.17.3",
         "moment": "^2.29.3",

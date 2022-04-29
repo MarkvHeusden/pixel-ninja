@@ -11,13 +11,13 @@
         <title>Home</title>
     </head>
     <body class="home">
-        <h1>Test app</h1>
-        <input autocomplete="off" class="menu-item" name="username" id="usernameInput" placeholder="Username" type="text" maxlength="15" />
+        <h1>Pixel Game</h1>
+        <input autocomplete="off" class="menu-item" name="username" id="username-input" placeholder="Username" type="text" maxlength="15" />
         <form class="menu-item" autocomplete="off" action="/join-room" method="POST">
             <input name="roomId" required id="room-id" placeholder="Room ID" type="number" min="10000" max="99999" />
             <button type="submit">Neem deel</button>
         </form>
         <a class="menu-item" href="/room/<%= Math.floor(Math.random() * (99999 - 10000) + 10000) %>">Maak nieuwe room aan</a>
-        <script src="/js/username.js"></script>
+        <script src="/js/index.js"></script>
     </body>
 </html>

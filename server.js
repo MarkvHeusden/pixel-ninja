@@ -24,6 +24,10 @@ app.get('/room/:id', (req, res) => {
     res.render('room', { roomId: req.params.id })
 })
 
+app.get('/game', (req, res) => {
+    res.render('game')
+})
+
 app.post('/join-room', (req, res) => {
     res.redirect(`/room/${req.body.roomId}`)
 })

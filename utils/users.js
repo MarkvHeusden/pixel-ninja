@@ -1,5 +1,6 @@
 import { createAvatar } from '@dicebear/avatars'
-import * as style from '@dicebear/avatars-human-sprites'
+// import * as style from '@dicebear/avatars-human-sprites'
+import * as style from '@dicebear/pixel-art-neutral'
 
 const users = []
 
