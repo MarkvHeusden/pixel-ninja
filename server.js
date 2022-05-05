@@ -1,7 +1,6 @@
 import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
-import formatMessage from './utils/messages.js'
 import { userJoin, getCurrentUser, userLeave, getRoomUsers } from './utils/users.js'
 
 const app = express()
@@ -24,32 +23,34 @@ app.get('/room/:id', (req, res) => {
     res.render('room', { roomId: req.params.id })
 })
 
-app.get('/game', (req, res) => {
-    res.render('game')
-})
-
 app.post('/join-room', (req, res) => {
     res.redirect(`/room/${req.body.roomId}`)
 })
 
 io.on('connection', (socket) => {
-    socket.on('join-room', (username, roomId) => {
-        const user = userJoin(socket.id, username, roomId)
+    socket.on('join-room', (username, roomId, x, y) => {
+        const user = userJoin(socket.id, username, roomId, x, y)
         socket.join(user.roomId)
-        socket.emit('new-message', formatMessage(botName, `Welkom ${user.username}`))
-        socket.broadcast.to(user.roomId).emit('new-message', formatMessage(botName, `${user.username} joined`))
+        socket.emit('new-message', { username: botName, content: `Welkom ${user.username}` })
+        socket.emit('show-character', user.character)
+        socket.broadcast.to(user.roomId).emit('new-message', { username: botName, content: `${user.username} joined` })
         io.to(user.roomId).emit('current-users', getRoomUsers(user.roomId))
+    })
+
+    socket.on('update-position', (data) => {
+        // console.log(`x: ${data.x}, y: ${data.y}`)
+        console.log(socket.id)
     })
 
     socket.on('send-message', (message) => {
         const user = getCurrentUser(socket.id)
-        io.to(user.roomId).emit('new-message', formatMessage(user.username, message))
+        io.to(user.roomId).emit('new-message', { username: user.username, content: message })
     })
 
     socket.on('disconnect', () => {
         const user = userLeave(socket.id)
         if (user) {
-            io.to(user.roomId).emit('new-message', formatMessage(botName, `${user.username} is weg`))
+            io.to(user.roomId).emit('new-message', { username: botName, content: `${user.username} is weg` })
             io.to(user.roomId).emit('current-users', getRoomUsers(user.roomId))
         }
     })

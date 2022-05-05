@@ -31,10 +31,12 @@
             <section class="game-container">
                 <div class="camera">
                     <div class="map pixel-art">
-                        <div class="character" facing="down" walking="true">
+                        <div class="character" id="my-character" facing="down" walking="true">
+                            <!-- <p class="character-name">namnaaaaam</p> -->
+                            <div class="sprite-box">
+                                <div class="character_spritesheet pixel-art"></div>
+                            </div>
                             <div class="shadow pixel-art"></div>
-                            <div class="character_spritesheet pixel-art"></div>
-                            <p>naam</p>
                         </div>
                     </div>
 
@@ -137,6 +139,27 @@
                 </div>
             </section>
         </main>
+        <template class="user-template">
+            <li class="user-item">
+                <img src="" alt="" />
+                <span></span>
+            </li>
+        </template>
+        <template class="chat-template">
+            <li class="chat-message">
+                <span class="chat-sender"></span>
+                <span class="chat-content"></span>
+            </li>
+        </template>
+        <template class="character-template">
+            <div class="character players" facing="down" walking="false">
+                <div class="sprite-box">
+                    <div class="character_spritesheet pixel-art"></div>
+                </div>
+                <div class="shadow pixel-art"></div>
+                <!-- <p></p> -->
+            </div>
+        </template>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/room.js"></script>
     </body>

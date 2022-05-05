@@ -32,12 +32,14 @@
     border: 2px solid #fff;
     overflow: hidden;
     background: #61ddf7;
+    /* background-color: #000; */
     position: relative;
 }
 
 .map {
     image-rendering: pixelated;
     background-image: url('../img/map.webp');
+    /* background-color: black; */
     background-size: 100%;
     width: calc(13 * var(--grid-cell));
     height: calc(10 * var(--grid-cell));
@@ -45,38 +47,57 @@
 }
 
 .character {
-    width: calc(var(--grid-cell) * 2);
+    width: calc(var(--grid-cell) * 1);
     height: calc(var(--grid-cell) * 2);
     position: absolute;
     overflow: hidden;
+    text-align: center;
+}
+
+.character-name {
+    margin: 1rem 0 0.5rem;
+    padding: 0.5rem;
+    background-color: #0000005b;
 }
 
 .shadow {
-    width: calc(var(--grid-cell) * 2);
+    width: calc(var(--grid-cell) * 1);
     height: calc(var(--grid-cell) * 2);
     position: absolute;
     left: 0;
-    top: 0;
-    background: url('../img/character-shadow.png') no-repeat no-repeat;
-    background-size: 100%;
+    top: -0.25rem;
+    background: url('../img/Shadow.png') no-repeat no-repeat;
+    background-size: 80%;
+    background-position: center bottom;
+    z-index: -1;
+    opacity: 0.3;
+}
+
+.sprite-box {
+    width: calc(var(--grid-cell) * 1);
+    height: calc(var(--grid-cell) * 1);
+    overflow: hidden;
+    position: absolute;
+    transform: translateY(75%);
 }
 
 .character_spritesheet {
     position: absolute;
-    background: url('../img/character.png') no-repeat no-repeat;
+    /* background-image: url('/img/SpriteSheet.png'); */
+    background-repeat: no-repeat;
     background-size: 100%;
-    width: calc(var(--grid-cell) * 8);
-    height: calc(var(--grid-cell) * 8);
+    width: calc(var(--grid-cell) * 4);
+    height: calc(var(--grid-cell) * 4);
 }
 
 .character[facing='right'] .character_spritesheet {
-    background-position-y: calc(var(--pixel-size) * -32);
+    background-position-x: calc(var(--pixel-size) * -48);
 }
 .character[facing='up'] .character_spritesheet {
-    background-position-y: calc(var(--pixel-size) * -64);
+    background-position-x: calc(var(--pixel-size) * -16);
 }
 .character[facing='left'] .character_spritesheet {
-    background-position-y: calc(var(--pixel-size) * -96);
+    background-position-x: calc(var(--pixel-size) * -32);
 }
 .character[walking='true'] .character_spritesheet {
     animation: walkAnimation 0.6s steps(4) infinite;
@@ -87,7 +108,7 @@
         transform: translate3d(0%, 0%, 0);
     }
     to {
-        transform: translate3d(-100%, 0%, 0);
+        transform: translate3d(0%, -100%, 0);
     }
 }
 
@@ -111,12 +132,12 @@
     height: calc(var(--pixel-size) * 13);
 }
 
-/* .dpad-button.pressed .Arrow_arrow-inset {
+.dpad-button.pressed .Arrow_arrow-inset {
     stroke: #07c2cc;
 }
 .dpad-button.pressed .Arrow_arrow-body {
     stroke: #17dfea;
-} */
+}
 
 .dpad-up {
     position: absolute;

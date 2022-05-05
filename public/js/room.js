@@ -4,16 +4,51 @@ const socket = io('/')
 const roomId = window.location.pathname.replace('/room/', '')
 const username = localStorage.getItem('username') || 'Anoniem'
 
+// Chat elements
 const chatForm = document.querySelector('#chat-form')
 const chatList = document.querySelector('.chat-list')
 const chatInput = document.querySelector('#message')
 
-// Join room
-socket.emit('join-room', username, roomId)
+// Game elements
+const character = document.querySelector('#my-character')
+const map = document.querySelector('.map')
 
-// Current users
+// Starting postion
+let x = 90
+let y = 34
+let held_directions = [] // State of which arrow keys we are holding down
+const speed = 1 // How fast the character moves in pixels per frame
+
+/* Direction key state */
+const directions = {
+    up: 'up',
+    down: 'down',
+    left: 'left',
+    right: 'right',
+}
+const keys = {
+    ArrowUp: directions.up,
+    w: directions.up,
+    ArrowLeft: directions.left,
+    a: directions.left,
+    ArrowRight: directions.right,
+    d: directions.right,
+    ArrowDown: directions.down,
+    s: directions.down,
+}
+
+// Join room
+socket.emit('join-room', username, roomId, x, y)
+
+socket.on('show-character', (characterName) => {
+    const mySprite = character.querySelector('.character_spritesheet')
+    mySprite.style.backgroundImage = `url(/img/characters/${characterName}/SpriteSheet.png`
+})
+
+// Display current users
 socket.on('current-users', (users) => {
-    outputUsers(users)
+    outputUserList(users)
+    outputPlayers(users)
 })
 
 // Message event
@@ -22,36 +57,18 @@ socket.on('new-message', (message) => {
     chatList.scrollTop = chatList.scrollHeight
 })
 
-// Create chat message
-function createMessage(message) {
-    const listItem = document.createElement('li')
-    const messageSender = document.createElement('span')
-    const messageContent = document.createElement('span')
-    messageSender.innerText = message.username + ': '
-    messageContent.innerText = message.content
-    listItem.appendChild(messageSender)
-    listItem.appendChild(messageContent)
-    // listItem.innerText = message.content
-    listItem.classList.add('chat-message')
-    chatList.appendChild(listItem)
-}
+// Create Character
+// function createCharacter(username, avatar) {
+//     const map = document.querySelector('.map')
+//     const characterTemplate = document.querySelector('.character-template')
+//     const characterClone = characterTemplate.content.cloneNode(true)
+//     // const name = characterClone.querySelector('p')
+//     // name.textContent = username
+//     map.appendChild(characterClone)
+// }
 
-// Add active users
-function outputUsers(users) {
-    const userList = document.querySelector('.user-list')
-    const userLenght = document.querySelector('#user-count')
-    userLenght.innerHTML = `(${users.length})`
-    userList.innerHTML = ''
-    users.forEach((user) => {
-        const li = document.createElement('li')
-        li.innerHTML = user.avatar
-        li.innerHTML += user.username
-        userList.appendChild(li)
-    })
-}
-
-// Chat input
-chatForm.addEventListener('submit', (e) => {
+// Send chat input
+function sendMessage(e) {
     e.preventDefault()
 
     const message = e.target.elements.message.value
@@ -60,18 +77,53 @@ chatForm.addEventListener('submit', (e) => {
         e.target.elements.message.value = ''
         e.target.elements.message.focus()
     }
-})
+}
 
-const character = document.querySelector('.character')
-const map = document.querySelector('.map')
+// Create chat message
+function createMessage(message) {
+    const chatTemplate = document.querySelector('.chat-template')
+    const chatClone = chatTemplate.content.cloneNode(true)
+    const sender = chatClone.querySelector('.chat-sender')
+    const content = chatClone.querySelector('.chat-content')
+    sender.textContent = `${message.username}: `
+    content.textContent = message.content
+    chatList.appendChild(chatClone)
+}
 
-//start in the middle of the map
-let x = 90
-let y = 34
-let held_directions = [] //State of which arrow keys we are holding down
-let speed = 1 //How fast the character moves in pixels per frame
+// Add active users
+function outputUserList(users) {
+    const userList = document.querySelector('.user-list')
+    const userLenght = document.querySelector('#user-count')
+    const userTemplate = document.querySelector('.user-template')
+    userLenght.textContent = `(${users.length})`
+    userList.innerHTML = ''
+    users.forEach((user) => {
+        const userClone = userTemplate.content.cloneNode(true)
+        const img = userClone.querySelector('img')
+        const name = userClone.querySelector('span')
+        img.src = `/img/characters/${user.character}/Faceset.png`
+        name.textContent = user.username
+        userList.appendChild(userClone)
+    })
+}
 
-const placeCharacter = () => {
+function outputPlayers(users) {
+    const playerElements = document.querySelectorAll('.players')
+    playerElements.forEach((player) => player.remove())
+    // map.removeChild(players);
+
+    const otherUsers = users.filter((user) => user.id !== socket.id)
+    otherUsers.forEach((user) => {
+        const characterTemplate = document.querySelector('.character-template')
+        const characterClone = characterTemplate.content.cloneNode(true)
+        const spritesheet = characterClone.querySelector('.character_spritesheet')
+        console.log(spritesheet)
+        spritesheet.style.backgroundImage = `url(/img/characters/${user.character}/SpriteSheet.png`
+        map.appendChild(characterClone)
+    })
+}
+
+function placeCharacter() {
     const pixelSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixel-size'))
 
     const held_direction = held_directions[0]
@@ -93,63 +145,44 @@ const placeCharacter = () => {
     character.setAttribute('walking', held_direction ? 'true' : 'false')
 
     // Limits (gives the illusion of walls)
-    const leftLimit = -8
-    const rightLimit = 16 * 11 + 8
-    const topLimit = -8 + 32
-    const bottomLimit = 16 * 7
-    if (x < leftLimit) {
-        x = leftLimit
-    }
-    if (x > rightLimit) {
-        x = rightLimit
-    }
-    if (y < topLimit) {
-        y = topLimit
-    }
-    if (y > bottomLimit) {
-        y = bottomLimit
-    }
-
-    // const cameraEl = document.querySelector('.camera')
-    // const camera_left = pixelSize * (cameraEl.offsetWidth / 9)
-    // const camera_top = pixelSize * (cameraEl.offsetHeight / 9)
-
-    // const camera_left = pixelSize * 66
-    // const camera_top = pixelSize * 42
+    // const leftLimit = 1
+    // const rightLimit = 16 * 11 + 15
+    // const topLimit = 32
+    // const bottomLimit = 16 * 7 + 4
+    // if (x < leftLimit) {
+    //     x = leftLimit
+    // }
+    // if (x > rightLimit) {
+    //     x = rightLimit
+    // }
+    // if (y < topLimit) {
+    //     y = topLimit
+    // }
+    // if (y > bottomLimit) {
+    //     y = bottomLimit
+    // }
 
     const camera_left = pixelSize * 98
     const camera_top = pixelSize * 65
 
     map.style.transform = `translate3d( ${-x * pixelSize + camera_left}px, ${-y * pixelSize + camera_top}px, 0 )`
     character.style.transform = `translate3d( ${x * pixelSize}px, ${y * pixelSize}px, 0 )`
+
+    // socket.emit('update-position', { x: x * pixelSize, y: y * pixelSize })
 }
 
 //Set up the game loop
-const step = () => {
+function game() {
     placeCharacter()
     window.requestAnimationFrame(() => {
-        step()
+        game()
     })
 }
-step() //kick off the first step!
+game()
 
-/* Direction key state */
-const directions = {
-    up: 'up',
-    down: 'down',
-    left: 'left',
-    right: 'right',
-}
-const keys = {
-    ArrowUp: directions.up,
-    w: directions.up,
-    ArrowLeft: directions.left,
-    a: directions.left,
-    ArrowRight: directions.right,
-    d: directions.right,
-    ArrowDown: directions.down,
-    s: directions.down,
-}
+// Listen to chat messages
+chatForm.addEventListener('submit', sendMessage)
+
 document.addEventListener('keydown', (e) => {
     const direction = keys[e.key]
     if (direction && held_directions.indexOf(direction) === -1 && e.target !== chatInput) {
