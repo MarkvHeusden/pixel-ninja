@@ -102,7 +102,6 @@ input::placeholder {
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
-    /* height: 85vh; */
     height: min(calc(100vh - 5rem), 50rem);
     padding-bottom: 2rem;
 }
@@ -114,7 +113,6 @@ input::placeholder {
     justify-content: space-between;
     min-width: 15rem;
     height: 100%;
-    /* align-items: stretch */
 }
 
 .users {
@@ -130,7 +128,7 @@ input::placeholder {
     line-break: anywhere;
 }
 
-.user-list li {
+.user-item {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -138,7 +136,7 @@ input::placeholder {
     line-break: anywhere;
 }
 
-.user-list svg {
+.user-item img {
     width: 3rem;
     flex-shrink: 0;
 }
@@ -172,23 +170,10 @@ input::placeholder {
 
 .game-container {
     flex: 1.5;
-    /* min-width: 20rem; */
-    /* flex-shrink: 1; */
-    /* flex: 3; */
-    /* flex: 7; */
+    user-select: none;
 }
 
-/* @media (max-width: 60rem) {
-    main.room {
-        flex-direction: column;
-    }
-} */
-
 @media (max-width: 40rem) {
-    body {
-        overflow-y: auto;
-    }
-
     .room-container {
         height: 100%;
         flex-wrap: nowrap;
@@ -201,21 +186,6 @@ input::placeholder {
 
     .home {
         font-size: 100%;
-    }
-
-    .menu-item {
-        height: 4rem;
-        font-size: 1.2rem;
-        line-height: 3.5rem;
-    }
-
-    .menu-item input {
-        font-size: 1.2rem;
-    }
-
-    .menu-item button {
-        font-size: 1.2rem;
-        width: 100%;
     }
 }
 
