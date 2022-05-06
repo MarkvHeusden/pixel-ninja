@@ -260,10 +260,10 @@ window.addEventListener('resize', () => {
 // document.querySelector('.dpad-right').addEventListener('mousedown', () => handleDpadPress(directions.right, { passive: true }))
 // document.querySelector('.dpad-down').addEventListener('mousedown', () => handleDpadPress(directions.down, { passive: true }))
 
-// document.querySelector('.dpad-left').addEventListener('touchstart', () => handleDpadPress(directions.left, true))
-// document.querySelector('.dpad-up').addEventListener('touchstart', () => handleDpadPress(directions.up, true))
-// document.querySelector('.dpad-right').addEventListener('touchstart', () => handleDpadPress(directions.right, true))
-// document.querySelector('.dpad-down').addEventListener('touchstart', () => handleDpadPress(directions.down, true))
+document.querySelector('.dpad-left').addEventListener('touchstart', () => handleDpadPress(directions.left, true))
+document.querySelector('.dpad-up').addEventListener('touchstart', () => handleDpadPress(directions.up, true))
+document.querySelector('.dpad-right').addEventListener('touchstart', () => handleDpadPress(directions.right, true))
+document.querySelector('.dpad-down').addEventListener('touchstart', () => handleDpadPress(directions.down, true))
 
 document.querySelector('.dpad-left').addEventListener('mousedown', () => handleDpadPress(directions.left, true))
 document.querySelector('.dpad-up').addEventListener('mousedown', () => handleDpadPress(directions.up, true))
