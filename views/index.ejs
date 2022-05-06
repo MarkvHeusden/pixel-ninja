@@ -11,10 +11,10 @@
         <title>Home</title>
     </head>
     <body class="home">
-        <h1>Pixel Game</h1>
-        <input autocomplete="off" class="menu-item" name="username" id="username-input" placeholder="Username" type="text" maxlength="15" />
+        <h1>Pixel Ninja</h1>
+        <input autocomplete="off" class="menu-item" name="username" id="username-input" placeholder="Naam" type="text" maxlength="10" />
         <form class="menu-item" autocomplete="off" action="/join-room" method="POST">
-            <input name="roomId" required id="room-id" placeholder="Room ID" type="number" min="10000" max="99999" />
+            <input name="roomId" required id="room-id" placeholder="Room ID" type="number" min="1000" max="9999" />
             <button type="submit">Neem deel</button>
         </form>
         <a class="menu-item" href="/room/<%= Math.floor(Math.random() * (9999 - 1000) + 1000) %>">Maak nieuwe room aan</a>
