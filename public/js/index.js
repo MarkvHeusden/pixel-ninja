@@ -17,7 +17,7 @@ usernameInput.addEventListener('blur', (e) => {
 
 // Limit room input length to 5 numbers
 roomInput.oninput = function () {
-    if (this.value.length > 5) {
-        this.value = this.value.slice(0, 5)
+    if (this.value.length > 4) {
+        this.value = this.value.slice(0, 4)
     }
 }
