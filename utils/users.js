@@ -1,36 +1,81 @@
-// import { createAvatar } from '@dicebear/avatars'
-// import * as style from '@dicebear/avatars-human-sprites'
-// import * as style from '@dicebear/pixel-art-neutral'
+import { io } from '../server.js'
 
 const users = []
 const characters = [
-    'Noble',
-    'OldMan',
-    'BlueSamurai',
-    'Cavegirl',
-    'Caveman',
     'DarkNinja',
-    'Eskimo',
-    'GrayNinja',
     'GreenNinja',
-    'Princess',
     'RedSamurai',
+    'BlueSamurai',
+    'Caveman',
+    'Eskimo',
+    'Noble',
+    'Cavegirl',
+    'GrayNinja',
+    'Princess',
     'Skeleton',
+    'OldMan',
 ]
 
-// function getAvatar(username) {
-//     return createAvatar(style, {
-//         seed: username,
-//     })
-// }
+// Limits
+const leftLimit = 10
+const rightLimit = 385
+const topLimit = 70
+const bottomLimit = 240
+
+const speed = 2
+const directions = {
+    up: 'up',
+    down: 'down',
+    left: 'left',
+    right: 'right',
+}
+
+export function gameInterval(roomId) {
+    const interval = setInterval(() => {
+        const roomUsers = getRoomUsers(roomId)
+        roomUsers.forEach((user) => {
+            if (user.direction) {
+                if (user.direction === directions.right) {
+                    user.x += speed
+                }
+                if (user.direction === directions.left) {
+                    user.x -= speed
+                }
+                if (user.direction === directions.down) {
+                    user.y += speed
+                }
+                if (user.direction === directions.up) {
+                    user.y -= speed
+                }
+            }
+
+            if (user.x < leftLimit) {
+                user.x = leftLimit
+            }
+            if (user.x > rightLimit) {
+                user.x = rightLimit
+            }
+            if (user.y < topLimit) {
+                user.y = topLimit
+            }
+            if (user.y > bottomLimit) {
+                user.y = bottomLimit
+            }
+        })
+        // Clear interval if no players left
+        if (roomUsers.length < 1) clearInterval(interval)
+
+        io.to(roomId).emit('update-players', roomUsers)
+    }, 1000 / 30)
+}
 
 // Join user to chat
-export function userJoin(id, username, roomId, x, y) {
-    // Get unique character. If too many users get random character
-    const character =
-        users.length < characters.length ? characters[users.length] : characters[Math.floor(Math.random() * characters.length)]
+export function createUser(id, username, roomId, x, y) {
+    // Get an unused character. If every character is used get random character
+    const usedCharacters = getRoomUsers(roomId).map((user) => user.character)
+    const unusedCharacters = characters.filter((character) => !usedCharacters.includes(character))
+    const character = unusedCharacters[0] ? unusedCharacters[0] : characters[Math.floor(Math.random() * characters.length)]
     const user = { id, username, roomId, character, x, y }
-    console.log(user)
     users.push(user)
     return user
 }
