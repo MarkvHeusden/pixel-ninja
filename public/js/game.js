@@ -10,14 +10,22 @@ const chatList = document.querySelector('.chat-list')
 const chatInput = document.querySelector('#message')
 
 // Game elements
+let pixelSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixel-size'))
 const character = document.querySelector('#my-character')
 const map = document.querySelector('.map')
+let otherPlayers = []
 
-// Starting postion
-let x = 90
-let y = 34
-let held_directions = [] // State of which arrow keys we are holding down
-const speed = 1 // How fast the character moves in pixels per frame
+// // Limits (gives the illusion of walls)
+const leftLimit = 10
+const rightLimit = 385
+const topLimit = 70
+const bottomLimit = 240
+
+// // Starting postion
+let x = Math.floor(Math.random() * (rightLimit - leftLimit) + leftLimit)
+let y = Math.floor(Math.random() * (bottomLimit - topLimit) + topLimit)
+let heldDirections = [] // State of which arrow keys we are holding down
+const speed = 1
 
 /* Direction key state */
 const directions = {
@@ -26,6 +34,7 @@ const directions = {
     left: 'left',
     right: 'right',
 }
+
 const keys = {
     ArrowUp: directions.up,
     w: directions.up,
@@ -40,6 +49,7 @@ const keys = {
 // Join room
 socket.emit('join-room', username, roomId, x, y)
 
+// Get unique character
 socket.on('show-character', (characterName) => {
     const mySprite = character.querySelector('.character_spritesheet')
     mySprite.style.backgroundImage = `url(/img/characters/${characterName}/SpriteSheet.png`
@@ -49,6 +59,7 @@ socket.on('show-character', (characterName) => {
 socket.on('current-users', (users) => {
     outputUserList(users)
     outputPlayers(users)
+    // console.log(myPlayer.directions)
 })
 
 // Message event
@@ -57,15 +68,10 @@ socket.on('new-message', (message) => {
     chatList.scrollTop = chatList.scrollHeight
 })
 
-// Create Character
-// function createCharacter(username, avatar) {
-//     const map = document.querySelector('.map')
-//     const characterTemplate = document.querySelector('.character-template')
-//     const characterClone = characterTemplate.content.cloneNode(true)
-//     // const name = characterClone.querySelector('p')
-//     // name.textContent = username
-//     map.appendChild(characterClone)
-// }
+// Update player positions
+socket.on('update-players', (players) => {
+    otherPlayers = players.filter((user) => user.id !== socket.id)
+})
 
 // Send chat input
 function sendMessage(e) {
@@ -110,65 +116,70 @@ function outputUserList(users) {
 function outputPlayers(users) {
     const playerElements = document.querySelectorAll('.players')
     playerElements.forEach((player) => player.remove())
-    // map.removeChild(players);
-
-    const otherUsers = users.filter((user) => user.id !== socket.id)
-    otherUsers.forEach((user) => {
+    const otherPlayers = users.filter((user) => user.id !== socket.id)
+    otherPlayers.forEach((user) => {
         const characterTemplate = document.querySelector('.character-template')
         const characterClone = characterTemplate.content.cloneNode(true)
+        const characterContainer = characterClone.querySelector('.character')
         const spritesheet = characterClone.querySelector('.character_spritesheet')
-        console.log(spritesheet)
         spritesheet.style.backgroundImage = `url(/img/characters/${user.character}/SpriteSheet.png`
+        characterContainer.style.transform = `translate3d( ${user.x * pixelSize}px, ${user.y * pixelSize}px, 0 )`
+        characterContainer.id = user.id
         map.appendChild(characterClone)
     })
 }
 
 function placeCharacter() {
-    const pixelSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixel-size'))
-
-    const held_direction = held_directions[0]
-    if (held_direction) {
-        if (held_direction === directions.right) {
+    const heldDirection = heldDirections[0]
+    if (heldDirection) {
+        if (heldDirection === directions.right) {
             x += speed
         }
-        if (held_direction === directions.left) {
+        if (heldDirection === directions.left) {
             x -= speed
         }
-        if (held_direction === directions.down) {
+        if (heldDirection === directions.down) {
             y += speed
         }
-        if (held_direction === directions.up) {
+        if (heldDirection === directions.up) {
             y -= speed
         }
-        character.setAttribute('facing', held_direction)
+        character.setAttribute('facing', heldDirection)
     }
-    character.setAttribute('walking', held_direction ? 'true' : 'false')
+    character.setAttribute('walking', heldDirection ? 'true' : 'false')
 
-    // Limits (gives the illusion of walls)
-    // const leftLimit = 1
-    // const rightLimit = 16 * 11 + 15
-    // const topLimit = 32
-    // const bottomLimit = 16 * 7 + 4
-    // if (x < leftLimit) {
-    //     x = leftLimit
-    // }
-    // if (x > rightLimit) {
-    //     x = rightLimit
-    // }
-    // if (y < topLimit) {
-    //     y = topLimit
-    // }
-    // if (y > bottomLimit) {
-    //     y = bottomLimit
-    // }
+    if (x < leftLimit) {
+        x = leftLimit
+    }
+    if (x > rightLimit) {
+        x = rightLimit
+    }
+    if (y < topLimit) {
+        y = topLimit
+    }
+    if (y > bottomLimit) {
+        y = bottomLimit
+    }
 
-    const camera_left = pixelSize * 98
+    // work in progress, kijken naar map grootte ipv window??
+    const camera_left = pixelSize * (window.innerWidth / 13) + 110
     const camera_top = pixelSize * 65
 
     map.style.transform = `translate3d( ${-x * pixelSize + camera_left}px, ${-y * pixelSize + camera_top}px, 0 )`
     character.style.transform = `translate3d( ${x * pixelSize}px, ${y * pixelSize}px, 0 )`
 
-    // socket.emit('update-position', { x: x * pixelSize, y: y * pixelSize })
+    placeOtherCharacters()
+}
+
+function placeOtherCharacters() {
+    otherPlayers.forEach((player) => {
+        const playerElement = document.getElementById(player.id)
+        if (player.direction) {
+            playerElement.setAttribute('facing', player.direction)
+        }
+        playerElement.setAttribute('walking', player.direction ? 'true' : 'false')
+        playerElement.style.transform = `translate3d( ${player.x * pixelSize}px, ${player.y * pixelSize}px, 0 )`
+    })
 }
 
 //Set up the game loop
@@ -184,17 +195,22 @@ game()
 chatForm.addEventListener('submit', sendMessage)
 
 document.addEventListener('keydown', (e) => {
+    // myPlayer = players.find((user) => user.id === socket.id)
     const direction = keys[e.key]
-    if (direction && held_directions.indexOf(direction) === -1 && e.target !== chatInput) {
-        held_directions.unshift(direction)
+    if (direction && heldDirections.indexOf(direction) === -1 && e.target !== chatInput) {
+        heldDirections.unshift(direction)
+        // console.log(held_directions[0])
+        socket.emit('player-moves', heldDirections[0])
     }
 })
 
 document.addEventListener('keyup', (e) => {
     const direction = keys[e.key]
-    const index = held_directions.indexOf(direction)
+    const index = heldDirections.indexOf(direction)
     if (index > -1) {
-        held_directions.splice(index, 1)
+        heldDirections.splice(index, 1)
+        // console.log(heldDirections)
+        socket.emit('player-moves', heldDirections[0])
     }
 })
 
@@ -205,27 +221,34 @@ const removePressedAll = () => {
         d.classList.remove('pressed')
     })
 }
+
 document.body.addEventListener('mousedown', () => {
     // console.log('mouse is down')
     isPressed = true
 })
+
 document.body.addEventListener('mouseup', () => {
     // console.log('mouse is up')
     isPressed = false
-    held_directions = []
+    heldDirections = []
     removePressedAll()
 })
+
 const handleDpadPress = (direction, click) => {
     if (click) {
         isPressed = true
     }
-    held_directions = isPressed ? [direction] : []
+    heldDirections = isPressed ? [direction] : []
 
     if (isPressed) {
         removePressedAll()
         document.querySelector('.dpad-' + direction).classList.add('pressed')
     }
 }
+
+window.addEventListener('resize', () => {
+    pixelSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixel-size'))
+})
 //Bind a ton of events for the dpad
 // document.querySelector('.dpad-left').addEventListener('touchstart', () => handleDpadPress(directions.left, { passive: true }))
 // document.querySelector('.dpad-up').addEventListener('touchstart', () => handleDpadPress(directions.up, { passive: true }))
