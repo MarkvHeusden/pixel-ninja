@@ -15,7 +15,7 @@ const character = document.querySelector('#my-character')
 const map = document.querySelector('.map')
 let otherPlayers = []
 
-// // Limits (gives the illusion of walls)
+// // Walls
 const leftLimit = 10
 const rightLimit = 385
 const topLimit = 70
@@ -59,7 +59,6 @@ socket.on('show-character', (characterName) => {
 socket.on('current-users', (users) => {
     outputUserList(users)
     outputPlayers(users)
-    // console.log(myPlayer.directions)
 })
 
 // Message event
@@ -195,11 +194,9 @@ game()
 chatForm.addEventListener('submit', sendMessage)
 
 document.addEventListener('keydown', (e) => {
-    // myPlayer = players.find((user) => user.id === socket.id)
     const direction = keys[e.key]
     if (direction && heldDirections.indexOf(direction) === -1 && e.target !== chatInput) {
         heldDirections.unshift(direction)
-        // console.log(held_directions[0])
         socket.emit('player-moves', heldDirections[0])
     }
 })
@@ -209,7 +206,6 @@ document.addEventListener('keyup', (e) => {
     const index = heldDirections.indexOf(direction)
     if (index > -1) {
         heldDirections.splice(index, 1)
-        // console.log(heldDirections)
         socket.emit('player-moves', heldDirections[0])
     }
 })
@@ -223,12 +219,10 @@ const removePressedAll = () => {
 }
 
 document.body.addEventListener('mousedown', () => {
-    // console.log('mouse is down')
     isPressed = true
 })
 
 document.body.addEventListener('mouseup', () => {
-    // console.log('mouse is up')
     isPressed = false
     heldDirections = []
     removePressedAll()
@@ -249,17 +243,8 @@ const handleDpadPress = (direction, click) => {
 window.addEventListener('resize', () => {
     pixelSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixel-size'))
 })
-//Bind a ton of events for the dpad
-// document.querySelector('.dpad-left').addEventListener('touchstart', () => handleDpadPress(directions.left, { passive: true }))
-// document.querySelector('.dpad-up').addEventListener('touchstart', () => handleDpadPress(directions.up, { passive: true }))
-// document.querySelector('.dpad-right').addEventListener('touchstart', () => handleDpadPress(directions.right, { passive: true }))
-// document.querySelector('.dpad-down').addEventListener('touchstart', () => handleDpadPress(directions.down, { passive: true }))
 
-// document.querySelector('.dpad-left').addEventListener('mousedown', () => handleDpadPress(directions.left, { passive: true }))
-// document.querySelector('.dpad-up').addEventListener('mousedown', () => handleDpadPress(directions.up, { passive: true }))
-// document.querySelector('.dpad-right').addEventListener('mousedown', () => handleDpadPress(directions.right, { passive: true }))
-// document.querySelector('.dpad-down').addEventListener('mousedown', () => handleDpadPress(directions.down, { passive: true }))
-
+// Arrow button events
 document.querySelector('.dpad-left').addEventListener('touchstart', () => handleDpadPress(directions.left, true))
 document.querySelector('.dpad-up').addEventListener('touchstart', () => handleDpadPress(directions.up, true))
 document.querySelector('.dpad-right').addEventListener('touchstart', () => handleDpadPress(directions.right, true))
@@ -269,8 +254,3 @@ document.querySelector('.dpad-left').addEventListener('mousedown', () => handleD
 document.querySelector('.dpad-up').addEventListener('mousedown', () => handleDpadPress(directions.up, true))
 document.querySelector('.dpad-right').addEventListener('mousedown', () => handleDpadPress(directions.right, true))
 document.querySelector('.dpad-down').addEventListener('mousedown', () => handleDpadPress(directions.down, true))
-
-// document.querySelector('.dpad-left').addEventListener('mouseover', () => handleDpadPress(directions.left))
-// document.querySelector('.dpad-up').addEventListener('mouseover', () => handleDpadPress(directions.up))
-// document.querySelector('.dpad-right').addEventListener('mouseover', () => handleDpadPress(directions.right))
-// document.querySelector('.dpad-down').addEventListener('mouseover', () => handleDpadPress(directions.down))
