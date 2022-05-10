@@ -69,8 +69,21 @@ export function gameInterval(roomId) {
     }, 1000 / 30)
 }
 
+// Get characters from API
+function fetchCharacters() {
+    return fetch('http://localhost:5500/')
+        .then((response) => response.json())
+        .then((data) => {
+            return data
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+}
+
 // Join user to chat
 export function createUser(id, username, roomId, x, y) {
+    // const characters = fetchCharacters()
     // Get an unused character. If every character is used get random character
     const usedCharacters = getRoomUsers(roomId).map((user) => user.character)
     const unusedCharacters = characters.filter((character) => !usedCharacters.includes(character))
