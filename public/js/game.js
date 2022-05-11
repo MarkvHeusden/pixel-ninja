@@ -15,7 +15,7 @@ const character = document.querySelector('#my-character')
 const map = document.querySelector('.map')
 let otherPlayers = []
 
-// // Walls
+// Walls
 const leftLimit = 10
 const rightLimit = 385
 const topLimit = 70
@@ -131,36 +131,20 @@ function outputPlayers(users) {
 function placeCharacter() {
     const heldDirection = heldDirections[0]
     if (heldDirection) {
-        if (heldDirection === directions.right) {
-            x += speed
-        }
-        if (heldDirection === directions.left) {
-            x -= speed
-        }
-        if (heldDirection === directions.down) {
-            y += speed
-        }
-        if (heldDirection === directions.up) {
-            y -= speed
-        }
+        if (heldDirection === directions.right) x += speed
+        if (heldDirection === directions.left) x -= speed
+        if (heldDirection === directions.down) y += speed
+        if (heldDirection === directions.up) y -= speed
         character.setAttribute('facing', heldDirection)
     }
     character.setAttribute('walking', heldDirection ? 'true' : 'false')
 
-    if (x < leftLimit) {
-        x = leftLimit
-    }
-    if (x > rightLimit) {
-        x = rightLimit
-    }
-    if (y < topLimit) {
-        y = topLimit
-    }
-    if (y > bottomLimit) {
-        y = bottomLimit
-    }
+    // Map limits (wall illusion)
+    if (x < leftLimit) x = leftLimit
+    if (x > rightLimit) x = rightLimit
+    if (y < topLimit) y = topLimit
+    if (y > bottomLimit) y = bottomLimit
 
-    // work in progress, kijken naar map grootte ipv window??
     const camera_left = pixelSize * (window.innerWidth / 13) + 110
     const camera_top = pixelSize * 65
 

@@ -33,7 +33,7 @@ const directions = {
 export function gameInterval(roomId) {
     const interval = setInterval(() => {
         const roomUsers = getRoomUsers(roomId)
-        placeCharacters(roomUsers)
+        updatePlayerPositions(roomUsers)
 
         // Clear interval if no players left
         if (roomUsers.length < 1) clearInterval(interval)
@@ -42,7 +42,7 @@ export function gameInterval(roomId) {
     }, 1000 / 30)
 }
 
-function placeCharacters(roomUsers) {
+function updatePlayerPositions(roomUsers) {
     roomUsers.forEach((user) => {
         if (user.direction) {
             if (user.direction === directions.right) user.x += speed
