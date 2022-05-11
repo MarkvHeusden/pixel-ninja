@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
         socket.join(user.roomId)
         socket.emit('new-message', { username: botName, content: `Welkom ${user.username}` })
         socket.emit('show-character', user.character)
-        socket.broadcast.to(user.roomId).emit('new-message', { username: botName, content: `${user.username} joined` })
+        socket.broadcast.to(user.roomId).emit('new-message', { username: botName, content: `${user.username} neemt deel` })
         io.to(user.roomId).emit('current-users', getRoomUsers(user.roomId))
         // console.log(io.sockets.adapter.rooms.get(user.roomId))
     })

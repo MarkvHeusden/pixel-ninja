@@ -33,40 +33,29 @@ const directions = {
 export function gameInterval(roomId) {
     const interval = setInterval(() => {
         const roomUsers = getRoomUsers(roomId)
-        roomUsers.forEach((user) => {
-            if (user.direction) {
-                if (user.direction === directions.right) {
-                    user.x += speed
-                }
-                if (user.direction === directions.left) {
-                    user.x -= speed
-                }
-                if (user.direction === directions.down) {
-                    user.y += speed
-                }
-                if (user.direction === directions.up) {
-                    user.y -= speed
-                }
-            }
+        placeCharacters(roomUsers)
 
-            if (user.x < leftLimit) {
-                user.x = leftLimit
-            }
-            if (user.x > rightLimit) {
-                user.x = rightLimit
-            }
-            if (user.y < topLimit) {
-                user.y = topLimit
-            }
-            if (user.y > bottomLimit) {
-                user.y = bottomLimit
-            }
-        })
         // Clear interval if no players left
         if (roomUsers.length < 1) clearInterval(interval)
 
         io.to(roomId).emit('update-players', roomUsers)
     }, 1000 / 30)
+}
+
+function placeCharacters(roomUsers) {
+    roomUsers.forEach((user) => {
+        if (user.direction) {
+            if (user.direction === directions.right) user.x += speed
+            if (user.direction === directions.left) user.x -= speed
+            if (user.direction === directions.down) user.y += speed
+            if (user.direction === directions.up) user.y -= speed
+        }
+
+        if (user.x < leftLimit) user.x = leftLimit
+        if (user.x > rightLimit) user.x = rightLimit
+        if (user.y < topLimit) user.y = topLimit
+        if (user.y > bottomLimit) user.y = bottomLimit
+    })
 }
 
 // Get characters from API
