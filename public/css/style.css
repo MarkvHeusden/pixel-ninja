@@ -208,6 +208,7 @@ input::placeholder {
 .chat-message {
     margin-bottom: 0.75rem;
     line-height: 1.4;
+    font-size: 0.95rem;
 }
 
 .chat-message span:first-child {
@@ -272,7 +273,7 @@ input::placeholder {
     position: absolute;
     left: 0;
     bottom: 0.25rem;
-    background: url('/img/shadow.png') no-repeat no-repeat;
+    background: url('/img/shadow2.png') no-repeat no-repeat;
     background-size: 80%;
     background-position: center bottom;
     z-index: -1;
