@@ -10,9 +10,9 @@ Pixel Ninja is een multiplayer pixelart spel met ninja's als karakters. Na het d
 -   [How to install](#🔧-how-to-install)
 -   [Features](#🛠-features)
 -   [Hoe is het gemaakt](#🤔-hoe-is-het-gemaakt)
--   [API's](#🗄️-apis)
 -   [Data life cycle](#📊-data-life-cycle)
--   [Todo's](#✅-todos)
+-   [API's](#🗄️-apis)
+-   [To do's](#✅-to-dos)
 -   [Packages](#🌐-npm-packages)
 -   [Resources](#🧱-resources)
 -   [License](#🔏-license)
@@ -52,7 +52,7 @@ npm start
 
 ## 🤔 Hoe is het gemaakt
 
-Als eerst heb ik een applicatie gemaakt waarbij gebruikers door middel van sockets in verschillende rooms konden komen. Hier heb ik een chat functionaliteit aan gekoppeld, en ik heb een start scherm gemaakt waar de gebruikers het room ID kunnen invullen en een naam kunnen invullen die vervolgens opgeslagen wordt in local storage. Vervolgens had ik een API hieraan gekoppeld die unieke karakters voor iedere gebruiker genereerde (https://avatars.dicebear.com/)
+Als eerst heb ik een applicatie gemaakt waarbij gebruikers door middel van sockets in verschillende rooms konden komen. Hier heb ik een chat functionaliteit aan gekoppeld, en ik heb een startscherm gemaakt waar de gebruikers het room ID kunnen invullen en een naam kunnen invullen die vervolgens opgeslagen wordt in local storage. Vervolgens had ik een API hieraan gekoppeld die unieke karakters voor iedere gebruiker genereerde (https://avatars.dicebear.com/)
 
 ### 🧠 Inspiratie
 
@@ -71,16 +71,16 @@ Hier zien de afbeeldingen er wazig uit, omdat de karakters maar 16 x 16 pixels g
 
 ### 🗺️ Map
 
-Nadat de karaters gefixt waren had ik een map nodig. Hiervoor heb ik hetzelfde asset pack gebruikt als voor de karakters. In dit asset pack zaten ook verschillende tilesets. Door middel van een programma genaamd 'Tiled' heb ik ik een map hierin gemaakt.
+Nadat de karakters gefixt waren had ik een map nodig. Hiervoor heb ik hetzelfde asset pack gebruikt als voor de karakters. In dit asset pack zaten ook verschillende tilesets. Door middel van een programma genaamd 'Tiled' heb ik ik een map hierin gemaakt.
 <img src="./docs/map.png" />
 
 ### 🎥 Camera en karakter logica
 
-Voor het werkend maken van de game logica met een camera die je volgt heb ik een tutorial voor top down games gevolgd (zie bronnen). Dit was echter singel player en werkte nog niet met mijn karakters en mijn map door de afwijkende afmetingen. Nadat alles voor 1 persoon werkte ging ik het multiplayer maken.
+Voor het werkend maken van de game logica met een camera die je volgt heb ik een tutorial voor top down games gevolgd (zie bronnen). Dit was echter single player en werkte nog niet met mijn karakters en mijn map door de afwijkende afmetingen. Nadat alles voor 1 persoon werkte ging ik het multiplayer maken.
 
 ### 🥈 Eerst versie: client side
 
-Dit multiplayer maken was echter veel moeilijker dan gedacht. Ik kon hier geen goede tutorial van vinden. Mijn eerste oplossing was om de positie door te sturen naar de andere clients en deze dan daar te bewegen. Dit zorgde ervoor dat veel data verstuurd werd, dus ik besloot alleen de richting door te sturen wanneer een toets werd ingedrukt. Zo kunnen andere clients met behulp van de richting gaan berekenen waar bepaalde karakters naar toe lopen en moeten staan. Dit heb ik uiteindelijk werkend gekregen. Het probleem was alleen dat de JavaScript en de `requestAnimationFrame()` van de gebruikers alleen uitvoerde wanneer iemand ook echt het venster heeft geopend. Wanneer je ergens anders mee bezig bent en de andere personen lopen, krijg je dit niet te zien wanneer je weer terug keert.
+Dit multiplayer maken was echter veel moeilijker dan gedacht. Ik kon hier geen goede tutorial van vinden. Mijn eerste oplossing was om de positie door te sturen naar de andere clients en deze dan daar te bewegen. Dit zorgde ervoor dat veel data verstuurd werd, dus ik besloot alleen de richting door te sturen wanneer een toets werd ingedrukt. Zo kunnen andere clients met behulp van de richting gaan berekenen waar bepaalde karakters naar toe lopen en moeten staan. Dit heb ik uiteindelijk werkend gekregen. Het probleem was alleen dat de JavaScript en de `requestAnimationFrame()` van de gebruikers alleen uitvoerde wanneer iemand ook echt het venster heeft geopend. Wanneer je ergens anders mee bezig bent en de andere personen lopen, krijg je dit niet te zien wanneer je weer terugkeert.
 
 ### 🥇 Server authority
 
@@ -108,7 +108,7 @@ function updatePlayerPositions(roomUsers) {
 
 ### ⏰ Game interval
 
-Omdat ik nu serverside de posities 30 keer per seconde moest berekenen heb ik een interval hiervoor gemaakt. Het probleem hierbij was dat ik met rooms werkte. Ik wil niet dat spelers uit andere rooms constant de data van alle spelers krijgen. Maar voor iedere speler een interval aanmaken gaat veel rekenkracht vereisen. Na veel(!) proberen is het gelukt om een interval aan te maken wanneer een nieuwe gebruiker een room joined. Als er iemand bij komt dan veranderd er niks, maar als er niemand meer in een room zit wordt de interval gecleared. Zo hoeft de server dus niks te doen als er ook niemand in een room zit.
+Omdat ik nu serverside de posities 30 keer per seconde moest berekenen heb ik een interval hiervoor gemaakt. Het probleem hierbij was dat ik met rooms werkte. Ik wil niet dat spelers uit andere rooms constant de data van alle spelers krijgen. Maar voor iedere speler een interval aanmaken gaat veel rekenkracht vereisen. Na veel(!) proberen is het gelukt om een interval aan te maken wanneer een nieuwe gebruiker een room joined. Als er iemand bij komt dan verandert er niks, maar als er niemand meer in een room zit wordt de interval gecleared. Zo hoeft de server dus niks te doen als er ook niemand in een room zit.
 
 ```js
 socket.on('join-room', (...) => {
@@ -140,15 +140,15 @@ function gameInterval(roomId) {
 }
 ```
 
-## 🗄️ API's
-
--   Zoals hierboven vermeld heb ik als API een eigen API gemaakt om zo de characters op te halen. Deze API heb ik [Ninja Characters API](https://github.com/MarkvHeusden/ninja-character-api) genoemd.
-
 ## 📊 Data life cycle
 
 ![](./docs/data-life-cycle.png)
 
-## ✅ Todo's
+## 🗄️ API's
+
+-   Zoals hierboven vermeld heb ik als API een eigen API gemaakt om zo de characters op te halen. Deze API heb ik [Ninja Characters API](https://github.com/MarkvHeusden/ninja-character-api) genoemd.
+
+## ✅ To do's
 
 -   Pixel wereld verder uitbreiden
 -   Game element toevoegen
