@@ -72,6 +72,7 @@ Hier zien de afbeeldingen er wazig uit, omdat de karakters maar 16 x 16 pixels g
 ### 🗺️ Map
 
 Nadat de karakters gefixt waren had ik een map nodig. Hiervoor heb ik hetzelfde asset pack gebruikt als voor de karakters. In dit asset pack zaten ook verschillende tilesets. Door middel van een programma genaamd 'Tiled' heb ik ik een map hierin gemaakt.
+
 <img src="./docs/map.png" />
 
 ### 🎥 Camera en karakter logica
